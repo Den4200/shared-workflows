@@ -6,7 +6,7 @@ A composite action that builds, pushes, signs, and attests a container image.
 
 ```yaml
 jobs:
-  build-push:
+  build:
     runs-on: ubuntu-latest
     permissions:
       artifact-metadata: write
@@ -15,7 +15,7 @@ jobs:
       id-token: write
       packages: write
     steps:
-      - uses: your-org/shared-workflows/actions/build-container-image@main
+      - uses: den4200/shared-workflows/actions/build-container-image@main
         with:
           image: ${{ github.repository }}
           username: ${{ github.actor }}
