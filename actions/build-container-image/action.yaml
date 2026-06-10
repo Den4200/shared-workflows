@@ -7,15 +7,17 @@ inputs:
     default: default
     description: Docker Bake build target
   image:
-    required: true
+    required: false
     description: Full image name (e.g. org/repo)
+    default: ${{ github.repository }}
   registry:
     required: false
     default: ghcr.io
     description: Container registry
   username:
-    required: true
+    required: false
     description: Container registry username
+    default: ${{ github.actor }}
   password:
     required: true
     description: Container registry password

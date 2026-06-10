@@ -17,10 +17,10 @@ jobs:
     steps:
       - uses: den4200/shared-workflows/actions/build-container-image@main
         with:
-          image: ${{ github.repository }}
-          username: ${{ github.actor }}
           password: ${{ github.token }}
           # Optional:
+          # image: org/image-name
+          # username: my-username
           # target: default
           # registry: ghcr.io
           # default-branch: main
@@ -32,15 +32,15 @@ jobs:
 
 ## Inputs
 
-| Name             | Required | Default      | Description                                     |
-| ---------------- | -------- | ------------ | ----------------------------------------------- |
-| `image`          | Yes      | —            | Full image name (e.g. org/repo)                 |
-| `username`       | Yes      | —            | Container registry username                     |
-| `password`       | Yes      | —            | Container registry password                     |
-| `target`         | No       | `default`    | Docker Bake build target                        |
-| `registry`       | No       | `ghcr.io`    | Container registry                              |
-| `default-branch` | No       | repo default | Default branch reference                        |
-| `vars`           | No       | `{}`         | Additional environment variables in JSON format |
+| Name             | Required | Default                | Description                                     |
+| ---------------- | -------- | ---------------------- | ----------------------------------------------- |
+| `password`       | Yes      | —                      | Container registry password                     |
+| `image`          | No       | `${{ github.repository }}` | Full image name (e.g. org/repo)             |
+| `username`       | No       | `${{ github.actor }}`  | Container registry username                     |
+| `target`         | No       | `default`              | Docker Bake build target                        |
+| `registry`       | No       | `ghcr.io`              | Container registry                              |
+| `default-branch` | No       | repo default           | Default branch reference                        |
+| `vars`           | No       | `{}`                   | Additional environment variables in JSON format |
 
 ## Required Permissions
 
