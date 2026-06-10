@@ -34,6 +34,16 @@ inputs:
 runs:
   using: composite
   steps:
+  - name: Normalize inputs
+    id: inputs
+    shell: bash
+    env:
+      USERNAME: ${{ inputs.username }}
+      IMAGE: ${{ inputs.image }}
+    run: |
+      echo "username=${USERNAME,,}" >> "$GITHUB_OUTPUT"
+      echo "image=${IMAGE,,}" >> "$GITHUB_OUTPUT"
+
   - name: Export variables
     shell: bash
     env:
@@ -53,14 +63,14 @@ runs:
     uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
     with:
       registry: ${{ inputs.registry }}
-      username: ${{ inputs.username }}
+      username: ${{ steps.inputs.outputs.username }}
       password: ${{ inputs.password }}
 
   - name: Generate metadata
     id: meta
     uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
     with:
-      images: ${{ inputs.registry }}/${{ inputs.image }}
+      images: ${{ inputs.registry }}/${{ steps.inputs.outputs.image }}
       flavor: |
         latest=${{ github.ref_name == inputs.default-branch }}
       tags: |
@@ -79,7 +89,7 @@ runs:
         ./docker-bake.hcl
         cwd://${{ steps.meta.outputs.bake-file }}
       set: |
-        ${{ inputs.target }}.cache-from=type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:latest
+        ${{ inputs.target }}.cache-from=type=registry,ref=${{ inputs.registry }}/${{ steps.inputs.outputs.image }}:latest
 
   - name: Obtain image digest
     id: digest
@@ -94,27 +104,27 @@ runs:
   - name: Sign image with Cosign
     shell: bash
     env:
-      IMAGE_REF: ${{ inputs.registry }}/${{ inputs.image }}@${{ steps.digest.outputs.digest }}
+      IMAGE_REF: ${{ inputs.registry }}/${{ steps.inputs.outputs.image }}@${{ steps.digest.outputs.digest }}
     run: |
       cosign sign --yes "$IMAGE_REF"
 
   - name: Generate build provenance attestation
     uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
     with:
-      subject-name: ${{ inputs.registry }}/${{ inputs.image }}
+      subject-name: ${{ inputs.registry }}/${{ steps.inputs.outputs.image }}
       subject-digest: ${{ steps.digest.outputs.digest }}
       push-to-registry: true
 
   - name: Generate SBOM with Syft
     uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
     with:
-      image: ${{ inputs.registry }}/${{ inputs.image }}@${{ steps.digest.outputs.digest }}
+      image: ${{ inputs.registry }}/${{ steps.inputs.outputs.image }}@${{ steps.digest.outputs.digest }}
       output-file: sbom.spdx.json
 
   - name: Generate SBOM attestation
     uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
     with:
-      subject-name: ${{ inputs.registry }}/${{ inputs.image }}
+      subject-name: ${{ inputs.registry }}/${{ steps.inputs.outputs.image }}
       subject-digest: ${{ steps.digest.outputs.digest }}
       sbom-path: sbom.spdx.json
       push-to-registry: true
