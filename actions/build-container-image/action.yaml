@@ -19,8 +19,9 @@ inputs:
     description: Container registry username
     default: ${{ github.actor }}
   password:
-    required: true
+    required: false
     description: Container registry password
+    default: ${{ github.token }}
   default-branch:
     required: false
     default: ${{ github.event.repository.default_branch }}

@@ -16,31 +16,19 @@ jobs:
       packages: write
     steps:
       - uses: den4200/shared-workflows/actions/build-container-image@main
-        with:
-          password: ${{ github.token }}
-          # Optional:
-          # image: org/image-name
-          # username: my-username
-          # target: default
-          # registry: ghcr.io
-          # default-branch: main
-          # vars: |
-          #   {
-          #     "NPM_TOKEN": "${{ secrets.NPM_TOKEN }}"
-          #   }
 ```
 
 ## Inputs
 
-| Name             | Required | Default                | Description                                     |
-| ---------------- | -------- | ---------------------- | ----------------------------------------------- |
-| `password`       | Yes      | —                      | Container registry password                     |
-| `image`          | No       | `${{ github.repository }}` | Full image name (e.g. org/repo)             |
-| `username`       | No       | `${{ github.actor }}`  | Container registry username                     |
-| `target`         | No       | `default`              | Docker Bake build target                        |
-| `registry`       | No       | `ghcr.io`              | Container registry                              |
-| `default-branch` | No       | repo default           | Default branch reference                        |
-| `vars`           | No       | `{}`                   | Additional environment variables in JSON format |
+| Name             | Required | Default                    | Description                                     |
+| ---------------- | -------- | -------------------------- | ----------------------------------------------- |
+| `password`       | No       | `${{ github.token }}`      | Container registry password                     |
+| `image`          | No       | `${{ github.repository }}` | Full image name (e.g. org/repo)                 |
+| `username`       | No       | `${{ github.actor }}`      | Container registry username                     |
+| `target`         | No       | `default`                  | Docker Bake build target                        |
+| `registry`       | No       | `ghcr.io`                  | Container registry                              |
+| `default-branch` | No       | repo default               | Default branch reference                        |
+| `vars`           | No       | `{}`                       | Additional environment variables in JSON format |
 
 ## Required Permissions
 
